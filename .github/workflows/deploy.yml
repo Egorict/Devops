@@ -35,7 +35,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull ermakov880/myapp:latest
-            docker stop myapp || true
+            git pull origin main
+            docker stop myapp || true   # убиваем старый контейнер, если был запущен вручную
             docker rm myapp || true
-            docker run -d -p 80:80 --name myapp ermakov880/myapp:latest
+            docker-compose pull
+            docker-compose up -d --remove-orphans
