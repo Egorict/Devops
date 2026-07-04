@@ -39,5 +39,5 @@ jobs:
             git pull
             docker stop myapp || true   # убиваем старый контейнер, если был запущен вручную
             docker rm myapp || true
-            docker-compose pull
-            docker-compose up -d --remove-orphans
+            docker compose pull
+            docker compose up -d --remove-orphans
