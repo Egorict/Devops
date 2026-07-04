@@ -1,7 +1,7 @@
 services:
   # твой существующий сервис
   myapp:
-    build: .
+    image: ermakov880/myapp:latest
     ports:
       - "80:80"
     networks:
