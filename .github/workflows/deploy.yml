@@ -36,6 +36,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             git pull origin main
+            cd Devops
             docker stop myapp || true   # убиваем старый контейнер, если был запущен вручную
             docker rm myapp || true
             docker-compose pull
