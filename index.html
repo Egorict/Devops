@@ -1,28 +1,424 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Девопс Тест</title>
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: Arial, sans-serif;
-        }
-        h1 {
-            font-size: 4rem;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            letter-spacing: 2px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>❤️ ЛЮБЛЮ АЛИСА ❤️</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at 20% 30%, #1a0011, #0d0d0d);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', 'Arial Black', system-ui, sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Ёбаный фон с мерцающими звёздами */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      background: transparent;
+      animation: starTwinkle 4s infinite alternate ease-in-out;
+    }
+
+    @keyframes starTwinkle {
+      0% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      width: 3px;
+      height: 3px;
+      box-shadow: 0 0 12px #ff99cc, 0 0 24px #ff66aa;
+      animation: floatStar 6s infinite alternate ease-in-out;
+    }
+
+    @keyframes floatStar {
+      0% { transform: translateY(0px) scale(1) rotate(0deg); }
+      100% { transform: translateY(-40px) scale(1.8) rotate(180deg); }
+    }
+
+    /* АНИМАЦИОННЫЙ КОНТЕЙНЕР — БЕЗУМИЕ */
+    .love-universe {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    /* ЦЕНТРАЛЬНАЯ НАДПИСЬ — МЕГА БЕЗУМНАЯ */
+    .main-text {
+      position: relative;
+      font-size: clamp(3.5rem, 18vw, 9rem);
+      font-weight: 900;
+      text-align: center;
+      letter-spacing: 6px;
+      background: linear-gradient(45deg, #ff0066, #ff3399, #ff66b2, #ff99cc, #ff66b2, #ff0066);
+      background-size: 400% 400%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(255, 0, 100, 0.7), 0 0 60px #ff0066, 0 0 120px #ff3399;
+      animation: crazyGradient 1.2s infinite alternate, pulseText 0.6s infinite alternate, shakeText 0.2s infinite;
+      transform-origin: center;
+      z-index: 100;
+      filter: drop-shadow(0 0 40px #ff0066);
+      pointer-events: auto;
+      cursor: default;
+      font-family: 'Arial Black', 'Impact', sans-serif;
+      line-height: 1.2;
+      transition: all 0.05s;
+    }
+
+    @keyframes crazyGradient {
+      0% { background-position: 0% 50%; }
+      25% { background-position: 50% 0%; }
+      50% { background-position: 100% 50%; }
+      75% { background-position: 50% 100%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes pulseText {
+      0% { transform: scale(1) rotate(-1deg); text-shadow: 0 0 40px #ff0066, 0 0 80px #ff3399; }
+      100% { transform: scale(1.1) rotate(1deg); text-shadow: 0 0 80px #ff3399, 0 0 160px #ff66b2, 0 0 240px #ff0066; }
+    }
+
+    @keyframes shakeText {
+      0% { transform: translate(-1px, -1px) rotate(-0.5deg); }
+      25% { transform: translate(2px, 1px) rotate(0.5deg); }
+      50% { transform: translate(-2px, 2px) rotate(-0.5deg); }
+      75% { transform: translate(1px, -2px) rotate(0.5deg); }
+      100% { transform: translate(-1px, 1px) rotate(-0.5deg); }
+    }
+
+    /* СЕРДЦА И ПОЦЕЛУИ — ЛЕТАЮТ И ВЗРЫВАЮТСЯ */
+    .heart, .kiss {
+      position: absolute;
+      font-size: 2.5rem;
+      pointer-events: none;
+      animation: flyCrazy 4s infinite alternate cubic-bezier(0.2, 0.8, 0.6, 1);
+      opacity: 0.9;
+      filter: drop-shadow(0 0 20px #ff0066) drop-shadow(0 0 40px #ff3399);
+      z-index: 50;
+      transform-origin: center;
+    }
+
+    .kiss {
+      font-size: 3rem;
+      filter: drop-shadow(0 0 30px #ff66aa) drop-shadow(0 0 60px #ff0066);
+    }
+
+    @keyframes flyCrazy {
+      0% { transform: translate(0, 0) scale(0.6) rotate(0deg); opacity: 0.3; }
+      20% { transform: translate(80px, -120px) scale(1.2) rotate(30deg); opacity: 1; }
+      40% { transform: translate(-150px, 60px) scale(0.8) rotate(-40deg); opacity: 0.9; }
+      60% { transform: translate(200px, 100px) scale(1.6) rotate(70deg); opacity: 1; }
+      80% { transform: translate(-100px, -180px) scale(0.9) rotate(-60deg); opacity: 0.8; }
+      100% { transform: translate(40px, -40px) scale(1.3) rotate(15deg); opacity: 0.9; }
+    }
+
+    .heart:nth-child(odd) { animation-duration: 3.2s; }
+    .heart:nth-child(3n) { animation-duration: 5.5s; }
+    .kiss:nth-child(5n) { animation-duration: 4.8s; }
+
+    /* ДОПОЛНИТЕЛЬНАЯ АНИМАЦИЯ — СЛУЧАЙНЫЕ ТРАЕКТОРИИ */
+    .heart.random, .kiss.random {
+      animation: randomFly 7s infinite alternate ease-in-out;
+    }
+
+    @keyframes randomFly {
+      0% { transform: translate(10vw, 10vh) scale(0.5) rotate(10deg); }
+      25% { transform: translate(70vw, 5vh) scale(1.8) rotate(80deg); }
+      50% { transform: translate(20vw, 80vh) scale(1.2) rotate(-120deg); }
+      75% { transform: translate(80vw, 70vh) scale(0.9) rotate(200deg); }
+      100% { transform: translate(50vw, 20vh) scale(1.5) rotate(-30deg); }
+    }
+
+    /* БУРЯ ИЗ СЕРДЕЦ (дополнительный слой) */
+    .storm {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+      overflow: hidden;
+    }
+
+    .storm-particle {
+      position: absolute;
+      font-size: 1.8rem;
+      opacity: 0.3;
+      animation: stormMove 8s infinite linear;
+      filter: blur(0.5px) drop-shadow(0 0 10px #ff0066);
+    }
+
+    @keyframes stormMove {
+      0% { transform: translateY(-10vh) translateX(-10vw) scale(0.3) rotate(0deg); opacity: 0.1; }
+      20% { opacity: 0.8; }
+      50% { transform: translateY(50vh) translateX(40vw) scale(1.7) rotate(180deg); opacity: 0.9; }
+      80% { opacity: 0.6; }
+      100% { transform: translateY(110vh) translateX(80vw) scale(0.5) rotate(360deg); opacity: 0.1; }
+    }
+
+    /* КНОПКА ДЛЯ ВЗРЫВА (прикол) */
+    .boom-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 18px 32px;
+      background: #ff0066;
+      border: none;
+      border-radius: 60px;
+      color: white;
+      font-weight: 900;
+      font-size: 1.6rem;
+      cursor: pointer;
+      box-shadow: 0 0 40px #ff0066, 0 0 80px #ff3399;
+      z-index: 999;
+      animation: btnPulse 1s infinite alternate;
+      transition: 0.2s;
+      pointer-events: auto;
+      font-family: 'Arial Black', sans-serif;
+      letter-spacing: 3px;
+    }
+
+    .boom-btn:hover {
+      transform: scale(1.2) rotate(5deg);
+      background: #ff3399;
+      box-shadow: 0 0 80px #ff66b2, 0 0 160px #ff0066;
+    }
+
+    @keyframes btnPulse {
+      0% { box-shadow: 0 0 30px #ff0066, 0 0 60px #ff3399; }
+      100% { box-shadow: 0 0 80px #ff3399, 0 0 160px #ff0066, 0 0 240px #ff66b2; }
+    }
+
+    /* Адаптив */
+    @media (max-width: 600px) {
+      .heart, .kiss { font-size: 2rem; }
+      .storm-particle { font-size: 1.5rem; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Алиса 9</h1>
+
+  <!-- Звёздный фон -->
+  <div class="stars" id="starsContainer"></div>
+
+  <!-- Шторм из сердец и поцелуев (нижний слой) -->
+  <div class="storm" id="stormLayer"></div>
+
+  <!-- Основной контейнер с летающими элементами -->
+  <div class="love-universe" id="loveUniverse">
+    <!-- Центральная надпись -->
+    <div class="main-text" id="mainText">ЛЮБЛЮ АЛИСА</div>
+  </div>
+
+  <!-- Кнопка "ВЗОРВИ СЕРДЦА" -->
+  <button class="boom-btn" id="boomBtn">💥 ВЗОРВИ 💥</button>
+
+  <script>
+    (function() {
+      // ------ ГЕНЕРАЦИЯ ЗВЁЗД ------
+      const starsContainer = document.getElementById('starsContainer');
+      for (let i = 0; i < 160; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = Math.random() * 5 + 1;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 6 + 's';
+        star.style.animationDuration = (Math.random() * 8 + 4) + 's';
+        star.style.boxShadow = `0 0 ${size * 4}px #ff99cc, 0 0 ${size * 8}px #ff66aa`;
+        starsContainer.appendChild(star);
+      }
+
+      // ------ ФУНКЦИЯ СОЗДАНИЯ ЛЕТАЮЩИХ СЕРДЕЦ И ПОЦЕЛУЕВ ------
+      function createFloatingElements() {
+        const container = document.getElementById('loveUniverse');
+        // Удаляем старые, если есть (кроме главного текста)
+        const existing = container.querySelectorAll('.heart, .kiss');
+        existing.forEach(el => el.remove());
+
+        const emojis = ['❤️', '💖', '💗', '💓', '💘', '💝', '♥️', '❤️‍🔥'];
+        const kissEmojis = ['💋', '💋', '💋', '💋', '💋', '💋', '💋', '💋']; // много поцелуев
+
+        // Создаём 45 сердец и 25 поцелуев с безумными позициями
+        for (let i = 0; i < 60; i++) {
+          const isKiss = i < 25; // первые 25 — поцелуи
+          const el = document.createElement('div');
+          el.className = isKiss ? 'kiss' : 'heart';
+          // случайный класс для разных анимаций
+          if (Math.random() > 0.5) el.classList.add('random');
+
+          el.textContent = isKiss 
+            ? kissEmojis[Math.floor(Math.random() * kissEmojis.length)]
+            : emojis[Math.floor(Math.random() * emojis.length)];
+
+          // Случайный размер
+          const size = isKiss ? 2.2 + Math.random() * 2.5 : 1.8 + Math.random() * 2.8;
+          el.style.fontSize = size + 'rem';
+
+          // Рандомная позиция по всему экрану
+          el.style.left = Math.random() * 90 + 5 + '%';
+          el.style.top = Math.random() * 90 + 5 + '%';
+
+          // Случайная задержка и длительность анимации
+          const delay = Math.random() * 4;
+          const duration = 3.5 + Math.random() * 5;
+          el.style.animationDelay = delay + 's';
+          el.style.animationDuration = duration + 's';
+
+          // Дополнительный поворот
+          el.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+          // Добавляем в контейнер
+          container.appendChild(el);
+        }
+
+        // Добавляем ещё немного поцелуев в шторм (нижний слой)
+        const stormLayer = document.getElementById('stormLayer');
+        // Очищаем шторм, но оставляем частицы
+        const oldStorm = stormLayer.querySelectorAll('.storm-particle');
+        oldStorm.forEach(p => p.remove());
+
+        for (let i = 0; i < 40; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'storm-particle';
+          particle.textContent = ['💋', '❤️', '💖', '💗', '💘', '💋', '💋', '💋'][Math.floor(Math.random() * 8)];
+          particle.style.left = Math.random() * 100 + '%';
+          particle.style.top = Math.random() * 100 + '%';
+          particle.style.fontSize = (1.2 + Math.random() * 2.2) + 'rem';
+          particle.style.animationDelay = Math.random() * 8 + 's';
+          particle.style.animationDuration = (6 + Math.random() * 8) + 's';
+          particle.style.opacity = 0.2 + Math.random() * 0.4;
+          stormLayer.appendChild(particle);
+        }
+      }
+
+      // ------ ПЕРВОНАЧАЛЬНОЕ СОЗДАНИЕ ------
+      createFloatingElements();
+
+      // ------ КНОПКА "ВЗОРВИ" - МЕГА БЕЗУМИЕ ------
+      document.getElementById('boomBtn').addEventListener('click', function(e) {
+        // Взрывная волна: добавляем тонны сердец и поцелуев на секунду
+        const container = document.getElementById('loveUniverse');
+        const emojis = ['❤️', '💖', '💗', '💓', '💘', '💝', '♥️', '❤️‍🔥', '💋', '💋', '💋', '💋', '💋'];
+
+        for (let i = 0; i < 80; i++) {
+          const el = document.createElement('div');
+          el.className = Math.random() > 0.6 ? 'kiss' : 'heart';
+          el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          el.style.fontSize = (1.5 + Math.random() * 4) + 'rem';
+          el.style.left = Math.random() * 95 + 2 + '%';
+          el.style.top = Math.random() * 95 + 2 + '%';
+          el.style.position = 'absolute';
+          el.style.pointerEvents = 'none';
+          el.style.zIndex = '200';
+          el.style.animation = `flyCrazy ${2 + Math.random() * 3}s infinite alternate cubic-bezier(0.2, 0.8, 0.6, 1)`;
+          el.style.animationDelay = Math.random() * 0.5 + 's';
+          el.style.filter = 'drop-shadow(0 0 40px #ff0066) drop-shadow(0 0 80px #ff3399)';
+          container.appendChild(el);
+
+          // Автоудаление через 5 секунд, чтобы не засорять
+          setTimeout(() => {
+            if (el.parentNode) el.remove();
+          }, 5000);
+        }
+
+        // Эффект "тряски" для главной надписи
+        const mainText = document.getElementById('mainText');
+        mainText.style.animation = 'none';
+        mainText.offsetHeight; // reflow
+        mainText.style.animation = 'crazyGradient 0.3s infinite alternate, pulseText 0.2s infinite alternate, shakeText 0.1s infinite';
+
+        // Визуальный бабах
+        document.body.style.backgroundColor = '#1a0011';
+        setTimeout(() => {
+          document.body.style.backgroundColor = '';
+        }, 200);
+
+        // Вибрация если поддерживается
+        if (navigator.vibrate) {
+          navigator.vibrate([100, 50, 100, 50, 200]);
+        }
+
+        // И ещё добавим в шторм
+        const stormLayer = document.getElementById('stormLayer');
+        for (let i = 0; i < 30; i++) {
+          const p = document.createElement('div');
+          p.className = 'storm-particle';
+          p.textContent = ['💋', '❤️', '💖', '💘', '💋', '💋'][Math.floor(Math.random() * 6)];
+          p.style.left = Math.random() * 100 + '%';
+          p.style.top = Math.random() * 100 + '%';
+          p.style.fontSize = (2 + Math.random() * 3) + 'rem';
+          p.style.animationDuration = (4 + Math.random() * 5) + 's';
+          p.style.opacity = 0.9;
+          stormLayer.appendChild(p);
+          setTimeout(() => { if (p.parentNode) p.remove(); }, 6000);
+        }
+
+        // Возврат анимации надписи через 2 секунды
+        setTimeout(() => {
+          mainText.style.animation = 'crazyGradient 1.2s infinite alternate, pulseText 0.6s infinite alternate, shakeText 0.2s infinite';
+        }, 2000);
+      });
+
+      // ------ ПЕРИОДИЧЕСКОЕ ОБНОВЛЕНИЕ ЭЛЕМЕНТОВ (для бесконечного безумия) ------
+      setInterval(() => {
+        // Обновляем часть элементов, чтобы они не стояли на месте
+        const hearts = document.querySelectorAll('.heart, .kiss');
+        if (hearts.length > 30) {
+          // Удаляем часть старых
+          for (let i = 0; i < 10 && i < hearts.length; i++) {
+            if (Math.random() > 0.6) {
+              hearts[i].remove();
+            }
+          }
+        }
+        // Добавляем новые случайные
+        const container = document.getElementById('loveUniverse');
+        if (container.children.length < 80) {
+          const el = document.createElement('div');
+          el.className = Math.random() > 0.5 ? 'kiss' : 'heart';
+          el.textContent = ['❤️', '💖', '💗', '💓', '💘', '💝', '💋', '💋', '💋'][Math.floor(Math.random() * 9)];
+          el.style.fontSize = (1.8 + Math.random() * 3) + 'rem';
+          el.style.left = Math.random() * 90 + 5 + '%';
+          el.style.top = Math.random() * 90 + 5 + '%';
+          el.style.animationDelay = Math.random() * 4 + 's';
+          el.style.animationDuration = (3 + Math.random() * 6) + 's';
+          if (Math.random() > 0.5) el.classList.add('random');
+          container.appendChild(el);
+        }
+      }, 3000);
+
+    })();
+  </script>
+
 </body>
 </html>
