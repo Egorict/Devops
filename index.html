@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>💕 абсурдно-мило 💕</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>💕 ЛЮБЛЮ АЛИСА 💕</title>
   <style>
     * {
       margin: 0;
@@ -13,13 +13,15 @@
 
     body {
       min-height: 100vh;
-      background: radial-gradient(circle at 30% 40%, #2d0a1e, #120810);
+      min-height: 100dvh;
+      background: radial-gradient(ellipse at 30% 40%, #2d0a1e, #120810);
       display: flex;
       justify-content: center;
       align-items: center;
-      font-family: 'Segoe UI', 'Arial Black', 'Comic Sans MS', cursive, sans-serif;
+      font-family: 'Arial Black', 'Comic Sans MS', 'Segoe UI', cursive, sans-serif;
       overflow: hidden;
       position: relative;
+      padding: 10px;
     }
 
     /* нежный мерцающий фон */
@@ -31,8 +33,10 @@
       height: 100%;
       pointer-events: none;
       z-index: 0;
-      background: radial-gradient(ellipse at 20% 30%, rgba(255, 100, 150, 0.08), transparent 60%),
-                  radial-gradient(ellipse at 80% 70%, rgba(255, 50, 130, 0.08), transparent 60%);
+      background: 
+        radial-gradient(ellipse at 15% 25%, rgba(255, 100, 180, 0.07), transparent 50%),
+        radial-gradient(ellipse at 85% 75%, rgba(255, 50, 150, 0.07), transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(255, 80, 160, 0.04), transparent 70%);
     }
 
     /* облака маленьких сердечек (фон) */
@@ -49,20 +53,21 @@
 
     .cloud-heart {
       position: absolute;
-      font-size: 1.2rem;
-      opacity: 0.15;
-      animation: cloudFloat 18s infinite alternate ease-in-out;
-      color: #ff88bb;
-      text-shadow: 0 0 20px #ff66aa, 0 0 40px #ff3399;
+      font-size: 1rem;
+      opacity: 0.1;
+      animation: cloudFloat 20s infinite alternate ease-in-out;
+      color: #ff99cc;
+      text-shadow: 0 0 30px #ff66aa, 0 0 60px #ff3399;
+      user-select: none;
     }
 
     @keyframes cloudFloat {
-      0% { transform: translateY(10vh) translateX(-10vw) scale(0.8) rotate(-5deg); opacity: 0.08; }
-      50% { opacity: 0.2; }
-      100% { transform: translateY(-10vh) translateX(10vw) scale(1.4) rotate(5deg); opacity: 0.15; }
+      0% { transform: translateY(8vh) translateX(-8vw) scale(0.7) rotate(-3deg); opacity: 0.06; }
+      50% { opacity: 0.14; }
+      100% { transform: translateY(-8vh) translateX(8vw) scale(1.2) rotate(3deg); opacity: 0.1; }
     }
 
-    /* основной контейнер — всё плавно и абсурдно */
+    /* основной контейнер — всё плавно */
     .love-bubble {
       position: relative;
       z-index: 10;
@@ -70,28 +75,32 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      width: 100vw;
+      width: 100%;
+      max-width: 1200px;
       height: 100vh;
+      height: 100dvh;
       pointer-events: none;
+      padding: 20px;
     }
 
-    /* центральная надпись — нежная, пухлая, слегка дышит */
+    /* центральная надпись — нежная, пухлая, дышит */
     .main-text {
-      font-size: clamp(4rem, 20vw, 10rem);
+      font-size: clamp(3.2rem, 16vw, 9rem);
       font-weight: 900;
       text-align: center;
-      letter-spacing: 8px;
-      background: linear-gradient(135deg, #ff99cc, #ff66b2, #ff99cc, #ffb3d9);
+      letter-spacing: clamp(4px, 1.5vw, 12px);
+      background: linear-gradient(135deg, #ffb3d9, #ff66b2, #ff99cc, #ffb3d9, #ff80bf);
       background-size: 300% 300%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 40px rgba(255, 80, 150, 0.3), 0 0 80px rgba(255, 50, 130, 0.2);
-      animation: gentleGradient 8s infinite alternate, breathe 3s infinite alternate ease-in-out;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(255, 80, 160, 0.15), 0 0 60px rgba(255, 50, 130, 0.1);
+      animation: gentleGradient 10s infinite alternate, breathe 3.5s infinite alternate ease-in-out;
       transform-origin: center;
-      font-family: 'Arial Black', 'Comic Sans MS', cursive, sans-serif;
-      line-height: 1.1;
-      filter: drop-shadow(0 0 30px rgba(255, 80, 160, 0.2));
-      transition: all 0.1s;
+      line-height: 1.15;
+      filter: drop-shadow(0 0 40px rgba(255, 80, 160, 0.15));
+      padding: 0 10px;
+      word-break: break-word;
     }
 
     @keyframes gentleGradient {
@@ -101,134 +110,140 @@
     }
 
     @keyframes breathe {
-      0% { transform: scale(1) rotate(-0.3deg); }
-      50% { transform: scale(1.03) rotate(0.3deg); }
-      100% { transform: scale(1) rotate(-0.3deg); }
+      0% { transform: scale(1) rotate(-0.2deg); }
+      50% { transform: scale(1.02) rotate(0.2deg); }
+      100% { transform: scale(1) rotate(-0.2deg); }
     }
 
-    /* маленькая подпись — милый абсурд */
-    .sub-text {
-      margin-top: 20px;
-      font-size: clamp(1.2rem, 4vw, 2.6rem);
-      color: #ffb3d9;
-      text-shadow: 0 0 30px #ff66aa, 0 0 60px #ff3399;
-      letter-spacing: 6px;
-      animation: subPulse 4s infinite alternate ease-in-out;
-      font-family: 'Comic Sans MS', 'Segoe UI', cursive;
-      opacity: 0.8;
-      font-weight: 300;
-    }
-
-    @keyframes subPulse {
-      0% { opacity: 0.5; transform: scale(0.98) rotate(-1deg); text-shadow: 0 0 20px #ff66aa; }
-      100% { opacity: 1; transform: scale(1.04) rotate(1deg); text-shadow: 0 0 50px #ff99cc, 0 0 80px #ff66aa; }
-    }
-
-    /* плавающие сердечки и поцелуйчики — абсурдно много, но нежно */
+    /* плавающие сердечки и поцелуйчики — абсурдно мило */
     .float-item {
       position: absolute;
       pointer-events: none;
       z-index: 20;
-      font-size: 2.2rem;
-      filter: drop-shadow(0 0 20px rgba(255, 80, 160, 0.3)) drop-shadow(0 0 40px rgba(255, 50, 130, 0.2));
-      animation: floatAround 12s infinite alternate ease-in-out;
-      opacity: 0.7;
-      transition: all 0.1s;
+      font-size: clamp(1.6rem, 4vw, 3.2rem);
+      filter: drop-shadow(0 0 20px rgba(255, 80, 160, 0.2)) drop-shadow(0 0 40px rgba(255, 50, 130, 0.1));
+      animation: floatAround 14s infinite alternate ease-in-out;
+      opacity: 0.6;
+      user-select: none;
+      will-change: transform;
     }
 
     .float-item.kiss {
-      font-size: 2.8rem;
-      filter: drop-shadow(0 0 30px rgba(255, 100, 180, 0.4));
+      font-size: clamp(2rem, 5vw, 4rem);
+      filter: drop-shadow(0 0 30px rgba(255, 100, 180, 0.3));
     }
 
     .float-item.small {
-      font-size: 1.4rem;
-      opacity: 0.5;
+      font-size: clamp(1rem, 2.5vw, 1.8rem);
+      opacity: 0.4;
     }
 
     .float-item.big {
-      font-size: 3.6rem;
-      opacity: 0.6;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      opacity: 0.5;
     }
 
     @keyframes floatAround {
       0% { transform: translate(0, 0) scale(0.9) rotate(0deg); }
-      15% { transform: translate(40px, -80px) scale(1.2) rotate(12deg); }
-      30% { transform: translate(-60px, 50px) scale(0.8) rotate(-15deg); }
-      45% { transform: translate(90px, 30px) scale(1.5) rotate(25deg); }
-      60% { transform: translate(-40px, -70px) scale(1.1) rotate(-10deg); }
-      75% { transform: translate(70px, -40px) scale(0.9) rotate(18deg); }
-      100% { transform: translate(-20px, 20px) scale(1.3) rotate(-5deg); }
+      20% { transform: translate(30px, -60px) scale(1.15) rotate(8deg); }
+      40% { transform: translate(-50px, 40px) scale(0.85) rotate(-10deg); }
+      60% { transform: translate(70px, 25px) scale(1.3) rotate(15deg); }
+      80% { transform: translate(-30px, -50px) scale(0.95) rotate(-7deg); }
+      100% { transform: translate(10px, 15px) scale(1.1) rotate(3deg); }
     }
 
-    /* второй набор анимаций для разнообразия */
     .float-item.float2 {
-      animation: floatAround2 14s infinite alternate ease-in-out;
+      animation: floatAround2 16s infinite alternate ease-in-out;
     }
 
     @keyframes floatAround2 {
       0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-      20% { transform: translate(-80px, 60px) scale(1.3) rotate(-20deg); }
-      40% { transform: translate(70px, -90px) scale(0.7) rotate(15deg); }
-      60% { transform: translate(-50px, -30px) scale(1.6) rotate(-8deg); }
-      80% { transform: translate(100px, 50px) scale(0.9) rotate(30deg); }
-      100% { transform: translate(10px, -10px) scale(1.1) rotate(-3deg); }
+      25% { transform: translate(-60px, 50px) scale(1.2) rotate(-12deg); }
+      50% { transform: translate(50px, -70px) scale(0.8) rotate(10deg); }
+      75% { transform: translate(-40px, -20px) scale(1.4) rotate(-6deg); }
+      100% { transform: translate(20px, 10px) scale(1.05) rotate(5deg); }
     }
 
     .float-item.float3 {
-      animation: floatAround3 10s infinite alternate ease-in-out;
+      animation: floatAround3 12s infinite alternate ease-in-out;
     }
 
     @keyframes floatAround3 {
-      0% { transform: translate(0, 0) scale(0.8) rotate(0deg); }
-      25% { transform: translate(60px, 80px) scale(1.4) rotate(-25deg); }
-      50% { transform: translate(-90px, -50px) scale(1.1) rotate(20deg); }
-      75% { transform: translate(40px, -100px) scale(0.6) rotate(-15deg); }
-      100% { transform: translate(-30px, 40px) scale(1.2) rotate(10deg); }
+      0% { transform: translate(0, 0) scale(0.85) rotate(0deg); }
+      30% { transform: translate(50px, 60px) scale(1.25) rotate(-15deg); }
+      60% { transform: translate(-70px, -40px) scale(0.75) rotate(12deg); }
+      90% { transform: translate(30px, -80px) scale(1.35) rotate(-8deg); }
+      100% { transform: translate(-10px, 20px) scale(1.0) rotate(5deg); }
     }
 
-    /* дополнительные маленькие звёздочки-блестки */
-    .sparkle {
-      position: absolute;
-      pointer-events: none;
-      z-index: 5;
-      font-size: 0.9rem;
-      opacity: 0.25;
-      animation: sparkleDrift 20s infinite linear;
-      color: #ffaacc;
-      text-shadow: 0 0 20px #ff66aa;
-    }
-
-    @keyframes sparkleDrift {
-      0% { transform: translateY(110vh) translateX(-10vw) rotate(0deg); opacity: 0; }
-      10% { opacity: 0.3; }
-      90% { opacity: 0.3; }
-      100% { transform: translateY(-10vh) translateX(10vw) rotate(360deg); opacity: 0; }
-    }
-
-    /* очень милые "пузыри" с сердечками */
+    /* очень милые "пузыри" */
     .bubble {
       position: absolute;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(255, 150, 200, 0.08), rgba(255, 80, 150, 0.02));
-      border: 1px solid rgba(255, 150, 200, 0.1);
-      box-shadow: 0 0 60px rgba(255, 80, 150, 0.05), inset 0 0 60px rgba(255, 80, 150, 0.02);
+      background: radial-gradient(circle at 30% 30%, rgba(255, 150, 200, 0.06), rgba(255, 80, 150, 0.01));
+      border: 1px solid rgba(255, 150, 200, 0.06);
+      box-shadow: 0 0 60px rgba(255, 80, 150, 0.03), inset 0 0 60px rgba(255, 80, 150, 0.01);
       pointer-events: none;
       z-index: 2;
-      animation: bubbleRise 25s infinite alternate ease-in-out;
+      animation: bubbleRise 30s infinite alternate ease-in-out;
     }
 
     @keyframes bubbleRise {
-      0% { transform: translateY(10vh) scale(0.8); opacity: 0.1; }
-      50% { opacity: 0.3; }
-      100% { transform: translateY(-10vh) scale(1.2); opacity: 0.05; }
+      0% { transform: translateY(8vh) scale(0.8); opacity: 0.05; }
+      50% { opacity: 0.15; }
+      100% { transform: translateY(-8vh) scale(1.2); opacity: 0.03; }
     }
 
-    /* адаптив */
-    @media (max-width: 600px) {
-      .float-item { font-size: 1.8rem; }
-      .float-item.kiss { font-size: 2.2rem; }
-      .float-item.big { font-size: 2.8rem; }
+    /* маленькие блёстки */
+    .sparkle {
+      position: absolute;
+      pointer-events: none;
+      z-index: 3;
+      font-size: clamp(0.6rem, 1.2vw, 1.2rem);
+      opacity: 0.15;
+      animation: sparkleDrift 25s infinite linear;
+      color: #ffaacc;
+      text-shadow: 0 0 20px #ff66aa;
+      user-select: none;
+    }
+
+    @keyframes sparkleDrift {
+      0% { transform: translateY(110vh) translateX(-5vw) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.2; }
+      90% { opacity: 0.2; }
+      100% { transform: translateY(-10vh) translateX(5vw) rotate(360deg); opacity: 0; }
+    }
+
+    /* адаптация под стандартные разрешения */
+    @media (max-width: 768px) {
+      .float-item { font-size: clamp(1.4rem, 3.5vw, 2.4rem); }
+      .float-item.kiss { font-size: clamp(1.8rem, 4.5vw, 3rem); }
+      .float-item.big { font-size: clamp(2.2rem, 6vw, 3.8rem); }
+      .cloud-heart { font-size: 0.8rem; }
+    }
+
+    @media (max-width: 480px) {
+      .float-item { font-size: clamp(1rem, 3vw, 1.8rem); }
+      .float-item.kiss { font-size: clamp(1.4rem, 4vw, 2.4rem); }
+      .float-item.big { font-size: clamp(1.8rem, 5vw, 3rem); }
+      .float-item.small { font-size: clamp(0.8rem, 2vw, 1.2rem); }
+      .cloud-heart { font-size: 0.7rem; }
+    }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+      .main-text {
+        font-size: clamp(2.2rem, 10vh, 5rem);
+      }
+      .float-item {
+        font-size: clamp(1rem, 2.5vh, 2rem);
+      }
+    }
+
+    /* для экранов с высоким разрешением */
+    @media (min-width: 1400px) {
+      .float-item { font-size: clamp(2.4rem, 3vw, 4rem); }
+      .float-item.kiss { font-size: clamp(3rem, 4vw, 5rem); }
+      .float-item.big { font-size: clamp(4rem, 5vw, 6rem); }
     }
   </style>
 </head>
@@ -249,68 +264,67 @@
   <!-- основной контейнер -->
   <div class="love-bubble" id="loveBubble">
     <div class="main-text">ЛЮБЛЮ АЛИСА</div>
-    <div class="sub-text">💕 бесконечно и абсурдно 💕</div>
   </div>
 
   <script>
     (function() {
       // ---- СОЗДАЁМ ОБЛАКО МАЛЕНЬКИХ СЕРДЕЦ (фон) ----
       const cloudContainer = document.getElementById('cloudHearts');
-      const heartEmojis = ['♥', '❤', '♡', '❤️', '♥️'];
-      for (let i = 0; i < 50; i++) {
+      const heartEmojis = ['♥', '❤', '♡', '❤️', '♥️', '💕', '💗'];
+      for (let i = 0; i < 45; i++) {
         const span = document.createElement('span');
         span.className = 'cloud-heart';
         span.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
         span.style.left = Math.random() * 100 + '%';
         span.style.top = Math.random() * 100 + '%';
-        span.style.fontSize = (0.8 + Math.random() * 2.2) + 'rem';
-        span.style.animationDelay = (Math.random() * 20) + 's';
-        span.style.animationDuration = (15 + Math.random() * 20) + 's';
-        span.style.opacity = 0.05 + Math.random() * 0.15;
+        span.style.fontSize = (0.6 + Math.random() * 1.8) + 'rem';
+        span.style.animationDelay = (Math.random() * 25) + 's';
+        span.style.animationDuration = (18 + Math.random() * 25) + 's';
+        span.style.opacity = 0.04 + Math.random() * 0.12;
         cloudContainer.appendChild(span);
       }
 
       // ---- ПУЗЫРИ ----
       const bubblesContainer = document.getElementById('bubblesContainer');
-      for (let i = 0; i < 12; i++) {
+      for (let i = 0; i < 10; i++) {
         const bubble = document.createElement('div');
         bubble.className = 'bubble';
-        const size = 40 + Math.random() * 180;
+        const size = 40 + Math.random() * 150;
         bubble.style.width = size + 'px';
         bubble.style.height = size + 'px';
         bubble.style.left = Math.random() * 100 + '%';
         bubble.style.top = Math.random() * 100 + '%';
-        bubble.style.animationDelay = (Math.random() * 25) + 's';
-        bubble.style.animationDuration = (20 + Math.random() * 20) + 's';
+        bubble.style.animationDelay = (Math.random() * 30) + 's';
+        bubble.style.animationDuration = (25 + Math.random() * 25) + 's';
         bubblesContainer.appendChild(bubble);
       }
 
-      // ---- БЛЁСТКИ (звёздочки) ----
+      // ---- БЛЁСТКИ ----
       const sparklesContainer = document.getElementById('sparklesContainer');
-      const sparkleSymbols = ['✦', '✧', '⭐', '✨', '💫', '✶', '⋆'];
-      for (let i = 0; i < 30; i++) {
+      const sparkleSymbols = ['✦', '✧', '⭐', '✨', '💫', '✶', '⋆', '·'];
+      for (let i = 0; i < 25; i++) {
         const sp = document.createElement('div');
         sp.className = 'sparkle';
         sp.textContent = sparkleSymbols[Math.floor(Math.random() * sparkleSymbols.length)];
         sp.style.left = Math.random() * 100 + '%';
         sp.style.top = Math.random() * 100 + '%';
-        sp.style.fontSize = (0.6 + Math.random() * 1.6) + 'rem';
-        sp.style.animationDelay = (Math.random() * 20) + 's';
-        sp.style.animationDuration = (15 + Math.random() * 25) + 's';
-        sp.style.opacity = 0.1 + Math.random() * 0.25;
+        sp.style.fontSize = (0.5 + Math.random() * 1.4) + 'rem';
+        sp.style.animationDelay = (Math.random() * 25) + 's';
+        sp.style.animationDuration = (18 + Math.random() * 30) + 's';
+        sp.style.opacity = 0.08 + Math.random() * 0.2;
         sparklesContainer.appendChild(sp);
       }
 
-      // ---- ГЛАВНЫЕ ЛЕТАЮЩИЕ СЕРДЦА И ПОЦЕЛУИ (абсурдно-мило) ----
+      // ---- ГЛАВНЫЕ ЛЕТАЮЩИЕ СЕРДЦА И ПОЦЕЛУИ ----
       const container = document.getElementById('loveBubble');
       const items = [
         '❤️', '❤️', '💖', '💗', '💓', '💘', '💝', '♥️', '💕', '💞', '💟',
-        '💋', '💋', '💋', '💋', '💋', '💋', '💋', '💋', '💋', '💋',  // много поцелуев
-        '❤️‍🔥', '🌸', '🌺', '💐', '🌷', '🌹', '🥰', '😘', '😍'
+        '💋', '💋', '💋', '💋', '💋', '💋', '💋', '💋', '💋', '💋',
+        '🌸', '🌺', '💐', '🌷', '🌹', '🥰', '😘', '😍', '💕', '💞'
       ];
 
-      // создаём 60+ элементов с разными классами анимации
-      for (let i = 0; i < 70; i++) {
+      // создаём 55+ элементов
+      for (let i = 0; i < 60; i++) {
         const el = document.createElement('div');
         el.className = 'float-item';
 
@@ -318,41 +332,33 @@
         const animClass = Math.floor(Math.random() * 3);
         if (animClass === 0) el.classList.add('float2');
         else if (animClass === 1) el.classList.add('float3');
-        // иначе стандартный floatAround
 
-        // выбор emoji
         let emoji = items[Math.floor(Math.random() * items.length)];
         el.textContent = emoji;
 
-        // если поцелуй — добавляем класс kiss
-        if (emoji === '💋' || emoji === '💋' || emoji === '💋' || emoji === '💋') {
+        if (emoji === '💋' || emoji === '💋') {
           el.classList.add('kiss');
         }
 
-        // случайный размер
         const sizeRand = Math.random();
-        if (sizeRand < 0.25) el.classList.add('small');
-        else if (sizeRand < 0.55) el.classList.add('big');
+        if (sizeRand < 0.2) el.classList.add('small');
+        else if (sizeRand < 0.5) el.classList.add('big');
 
-        // позиция
         el.style.left = (5 + Math.random() * 90) + '%';
         el.style.top = (5 + Math.random() * 90) + '%';
 
-        // задержка и длительность
         const delay = Math.random() * 8;
-        const duration = 10 + Math.random() * 14;
+        const duration = 12 + Math.random() * 16;
         el.style.animationDelay = delay + 's';
         el.style.animationDuration = duration + 's';
-
-        // небольшой разброс opacity
-        el.style.opacity = 0.4 + Math.random() * 0.5;
+        el.style.opacity = 0.4 + Math.random() * 0.45;
 
         container.appendChild(el);
       }
 
-      // ---- ДОБАВЛЯЕМ ЕЩЁ НЕСКОЛЬКО "АБСУРДНЫХ" ЭЛЕМЕНТОВ (плюшевые мишки, цветочки) ----
-      const extraItems = ['🧸', '🐻', '🐼', '🌸', '🌼', '🌻', '🍬', '🍭', '🎀', '💝', '💘', '💖'];
-      for (let i = 0; i < 18; i++) {
+      // ---- ДОБАВЛЯЕМ НЕСКОЛЬКО "АБСУРДНО-МИЛЫХ" ЭЛЕМЕНТОВ ----
+      const extraItems = ['🧸', '🐻', '🐼', '🌸', '🌼', '🌻', '🍬', '🍭', '🎀', '💝', '💘', '💖', '🩷', '💗'];
+      for (let i = 0; i < 16; i++) {
         const el = document.createElement('div');
         el.className = 'float-item';
         el.classList.add('float2');
@@ -360,27 +366,25 @@
         el.textContent = extraItems[Math.floor(Math.random() * extraItems.length)];
         el.style.left = (5 + Math.random() * 90) + '%';
         el.style.top = (5 + Math.random() * 90) + '%';
-        el.style.fontSize = (1.8 + Math.random() * 2.5) + 'rem';
+        el.style.fontSize = 'clamp(1.4rem, 3.5vw, 2.8rem)';
         el.style.animationDelay = (Math.random() * 10) + 's';
-        el.style.animationDuration = (12 + Math.random() * 16) + 's';
-        el.style.opacity = 0.3 + Math.random() * 0.5;
+        el.style.animationDuration = (14 + Math.random() * 18) + 's';
+        el.style.opacity = 0.3 + Math.random() * 0.4;
         container.appendChild(el);
       }
 
-      // ---- ПЕРИОДИЧЕСКИ ДОБАВЛЯЕМ НОВЫЕ ЭЛЕМЕНТЫ, ЧТОБЫ НЕ БЫЛО СКУЧНО ----
+      // ---- ПЕРИОДИЧЕСКОЕ ОБНОВЛЕНИЕ (без рывков) ----
       setInterval(() => {
-        // удаляем несколько старых (не более 5)
         const allItems = container.querySelectorAll('.float-item');
-        if (allItems.length > 80) {
-          for (let i = 0; i < 5 && i < allItems.length; i++) {
+        if (allItems.length > 90) {
+          for (let i = 0; i < 3 && i < allItems.length; i++) {
             if (Math.random() > 0.6) {
               allItems[i].remove();
             }
           }
         }
 
-        // добавляем 2-3 новых
-        const newCount = 2 + Math.floor(Math.random() * 3);
+        const newCount = 1 + Math.floor(Math.random() * 2);
         for (let j = 0; j < newCount; j++) {
           const el = document.createElement('div');
           el.className = 'float-item';
@@ -393,17 +397,17 @@
           el.textContent = emoji;
           if (emoji === '💋') el.classList.add('kiss');
 
-          if (Math.random() < 0.25) el.classList.add('small');
-          else if (Math.random() < 0.5) el.classList.add('big');
+          if (Math.random() < 0.2) el.classList.add('small');
+          else if (Math.random() < 0.4) el.classList.add('big');
 
           el.style.left = (5 + Math.random() * 90) + '%';
           el.style.top = (5 + Math.random() * 90) + '%';
           el.style.animationDelay = (Math.random() * 4) + 's';
-          el.style.animationDuration = (10 + Math.random() * 14) + 's';
-          el.style.opacity = 0.4 + Math.random() * 0.5;
+          el.style.animationDuration = (12 + Math.random() * 16) + 's';
+          el.style.opacity = 0.4 + Math.random() * 0.45;
           container.appendChild(el);
         }
-      }, 5000);
+      }, 6000);
 
     })();
   </script>
