@@ -23,8 +23,8 @@ services:
       - "9100:9100"
     networks:
       - monitoring
-
-  --- Blackbox (проверка доступности) ---
+      
+  # --- Blackbox (проверка доступности) ---
   blackbox:
     image: prom/blackbox-exporter:latest
     container_name: blackbox
@@ -34,7 +34,7 @@ services:
       - monitoring
     restart: unless-stopped
 
-  --- Prometheus ---
+  # --- Prometheus ---
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
