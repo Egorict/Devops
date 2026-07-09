@@ -1,4 +1,4 @@
 ---
 domain_name: "www.apollonovaalisaviachislavovna.ru"   # твой домен
-letsencrypt_email: "your_email@example.com"          # твой email
+letsencrypt_email: "egoregor2008@gmail.com"          # твой email
 app_port: 8080                                       # порт, на котором работает твой контейнер
