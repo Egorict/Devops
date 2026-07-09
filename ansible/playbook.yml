@@ -6,12 +6,10 @@
     - vars/main.yml
 
   tasks:
-    # 1. Обновление системы
     - name: Update apt cache
       apt:
         update_cache: yes
 
-    # 2. Установка Nginx, Certbot и зависимостей
     - name: Install Nginx, Certbot and required packages
       apt:
         name:
@@ -22,7 +20,6 @@
           - git
         state: present
 
-    # 3. Создание папки для сайта (если нужно)
     - name: Create web root directory
       file:
         path: /var/www/{{ domain_name }}
@@ -31,14 +28,13 @@
         group: www-data
         mode: '0755'
 
-    # 4. Копирование конфига Nginx из шаблона
-    - name: Copy Nginx site configuration
+    # 4. СТАРТОВЫЙ КОНФИГ (без HTTPS)
+    - name: Copy initial Nginx config (HTTP only)
       template:
-        src: nginx.conf.j2
+        src: nginx-http.conf.j2
         dest: /etc/nginx/sites-available/{{ domain_name }}
       notify: restart nginx
 
-    # 5. Включение сайта (создание симлинка)
     - name: Enable site
       file:
         src: /etc/nginx/sites-available/{{ domain_name }}
@@ -46,14 +42,13 @@
         state: link
       notify: restart nginx
 
-    # 6. Удаление дефолтного сайта (чтобы не было конфликтов)
     - name: Remove default site
       file:
         path: /etc/nginx/sites-enabled/default
         state: absent
       notify: restart nginx
 
-    # 7. Получение SSL-сертификата через Certbot
+    # 7. ПОЛУЧЕНИЕ СЕРТИФИКАТА
     - name: Obtain SSL certificate from Let's Encrypt
       command: >
         certbot --nginx
@@ -66,7 +61,13 @@
         creates: /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem
       notify: reload nginx
 
-    # 8. Настройка автоматического обновления сертификата (Cron)
+    # 8. ФИНАЛЬНЫЙ КОНФИГ (с HTTPS)
+    - name: Copy final Nginx config with HTTPS
+      template:
+        src: nginx-https.conf.j2
+        dest: /etc/nginx/sites-available/{{ domain_name }}
+      notify: reload nginx
+
     - name: Set up automatic certificate renewal
       cron:
         name: "Renew Let's Encrypt certificates"
