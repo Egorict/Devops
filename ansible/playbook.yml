@@ -1,10 +1,89 @@
 ---
-- name: Setup web server
+- name: Full setup — Nginx + HTTPS + Docker proxy
   hosts: webservers
   become: yes
+  vars_files:
+    - vars/main.yml
+
   tasks:
-    - name: Install Nginx
+    # 1. Обновление системы
+    - name: Update apt cache
       apt:
-        name: nginx
-        state: present
         update_cache: yes
+
+    # 2. Установка Nginx, Certbot и зависимостей
+    - name: Install Nginx, Certbot and required packages
+      apt:
+        name:
+          - nginx
+          - certbot
+          - python3-certbot-nginx
+          - curl
+          - git
+        state: present
+
+    # 3. Создание папки для сайта (если нужно)
+    - name: Create web root directory
+      file:
+        path: /var/www/{{ domain_name }}
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    # 4. Копирование конфига Nginx из шаблона
+    - name: Copy Nginx site configuration
+      template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/sites-available/{{ domain_name }}
+      notify: restart nginx
+
+    # 5. Включение сайта (создание симлинка)
+    - name: Enable site
+      file:
+        src: /etc/nginx/sites-available/{{ domain_name }}
+        dest: /etc/nginx/sites-enabled/{{ domain_name }}
+        state: link
+      notify: restart nginx
+
+    # 6. Удаление дефолтного сайта (чтобы не было конфликтов)
+    - name: Remove default site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: restart nginx
+
+    # 7. Получение SSL-сертификата через Certbot
+    - name: Obtain SSL certificate from Let's Encrypt
+      command: >
+        certbot --nginx
+        --domain {{ domain_name }}
+        --non-interactive
+        --agree-tos
+        --email {{ letsencrypt_email }}
+        --redirect
+      args:
+        creates: /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem
+      notify: reload nginx
+
+    # 8. Настройка автоматического обновления сертификата (Cron)
+    - name: Set up automatic certificate renewal
+      cron:
+        name: "Renew Let's Encrypt certificates"
+        job: "certbot renew --quiet && systemctl reload nginx"
+        minute: "0"
+        hour: "2"
+        day: "*"
+        month: "*"
+        weekday: "0,4"
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+
+    - name: reload nginx
+      service:
+        name: nginx
+        state: reloaded
