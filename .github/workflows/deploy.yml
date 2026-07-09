@@ -41,3 +41,12 @@ jobs:
             docker rm myapp || true
             docker compose pull
             docker compose up -d --remove-orphans
+      - name: Install Ansible
+        run: sudo apt update && sudo apt install ansible -y
+
+      - name: Run Ansible playbook for server configuration
+        run: |
+          cd ansible
+          ansible-playbook -i inventory.ini playbook.yml
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"

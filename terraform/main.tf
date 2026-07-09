@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     regru = {
-      source  = "regru/regru-cloud"
-      version = "1.0.2"
+      source  = "sport24ru/regru"
+      version = "~> 1.0" # Используйте последнюю стабильную версию[citation:1]
     }
   }
 }
@@ -12,6 +12,9 @@ provider "regru" {
   password = var.password
 }
 
-resource "regru_cloud_server" "my_server" {
-  # параметры пока не важны, главное — сам ресурс
+# Создаём A-запись для домена example.com, указывающую на ваш IP
+resource "regru_dns_a_record" "my_site" {
+  zone    = "apollonovaalisaviachislavovna.ru"        # Ваш домен
+  name    = "www"                # Поддомен (будет www.example.com). "@" для основного домена
+  records = ["194.226.163.161"]  # Ваш публичный IP-адрес
 }
