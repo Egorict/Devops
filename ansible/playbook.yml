@@ -1,11 +1,8 @@
 ---
-- name: Test Ansible connection
+- name: Setup web server
   hosts: webservers
   become: yes
   tasks:
-    - name: Ping test
-      ping:
-
     - name: Install Nginx
       apt:
         name: nginx
