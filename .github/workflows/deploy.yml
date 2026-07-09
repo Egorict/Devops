@@ -41,12 +41,20 @@ jobs:
             docker rm myapp || true
             docker compose pull
             docker compose up -d --remove-orphans
+
+      # 5. Устанавливаем Ansible на раннер
       - name: Install Ansible
         run: sudo apt update && sudo apt install ansible -y
 
-      - name: Run Ansible playbook for server configuration
+      # 6. Настраиваем SSH-ключ для Ansible и запускаем плейбук
+      - name: Setup SSH key and run Ansible
         run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          eval $(ssh-agent -s)
+          ssh-add ~/.ssh/id_rsa
           cd ansible
-          ansible-playbook -i inventory.ini playbook.yml
+          ansible-playbook -i inventory.ini playbook.yml -v
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
