@@ -6,6 +6,15 @@ on:
   pull_request:
     branches: [ master ]
 
+permissions:
+  contents: read
+  security-events: write   # нужно для CodeQL и Trivy
+  actions: read
+  checks: write
+  pull-requests: write
+  issues: write
+  id-token: write
+  
 env:
   REGISTRY: docker.io
   IMAGE_NAME: ermakov880/myapp
