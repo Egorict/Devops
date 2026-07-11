@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>" />
-    <title>💕 1</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90' fill='%23ff1493'%3E❤️%3C/text%3E%3C/svg%3E" />
+    <title>💕 2</title>
     <style>
         * {
             margin: 0;
@@ -25,7 +25,6 @@
             position: relative;
         }
 
-        /* легкий свечение фона */
         .bg-glow {
             position: fixed;
             inset: 0;
@@ -50,7 +49,6 @@
             padding: 10px;
         }
 
-        /* главная надпись — нежная, плавная, без тряски */
         .main-text {
             font-size: clamp(3.8rem, 18vw, 10rem);
             font-weight: 900;
@@ -95,7 +93,6 @@
             }
         }
 
-        /* плавающие элементы — ровно столько, сколько нужно */
         .float-item {
             position: absolute;
             pointer-events: none;
@@ -155,7 +152,6 @@
             }
         }
 
-        /* очень легкие пузыри */
         .bubble {
             position: absolute;
             border-radius: 50%;
@@ -181,7 +177,6 @@
             }
         }
 
-        /* адаптивность */
         @media (max-width: 768px) {
             .float-item {
                 font-size: clamp(1rem, 2.8vw, 1.8rem);
@@ -234,13 +229,13 @@
 
     <div class="bg-glow"></div>
 
-    <div class="love-container" id="loveContainer">
+    <div class="love-container" id="love-container">
         <div class="main-text">ЛЮБЛ2Ю АЛИСА</div>
     </div>
 
     <script>
         (function() {
-            const container = document.getElementById('loveContainer');
+            const container = document.getElementById('love-container');
 
             // эмодзи — только сердечки, поцелуйчики и цветочки
             const emojis = [
@@ -249,15 +244,12 @@
                 '🌸', '🌷', '🌹', '💐', '🌺'
             ];
 
-            // всего 18 элементов — оптимальное количество
             const total = 18;
-            const used = [];
 
             for (let i = 0; i < total; i++) {
                 const el = document.createElement('div');
                 el.className = 'float-item';
 
-                // чередуем анимации
                 if (i % 2 === 0) el.classList.add('float2');
 
                 const emoji = emojis[i % emojis.length];
@@ -266,7 +258,6 @@
                 if (emoji === '💋') el.classList.add('kiss');
                 if (i % 4 === 0) el.classList.add('small');
 
-                // равномерное распределение по экрану
                 const col = i % 6;
                 const row = Math.floor(i / 6);
                 const x = 8 + col * 14 + Math.random() * 4;
@@ -274,7 +265,6 @@
                 el.style.left = x + '%';
                 el.style.top = y + '%';
 
-                // плавные задержки
                 const delay = (i * 0.7) % 8;
                 const duration = 16 + (i % 6) * 0.9;
                 el.style.animationDelay = delay + 's';
@@ -282,10 +272,8 @@
                 el.style.opacity = 0.4 + (i % 3) * 0.08;
 
                 container.appendChild(el);
-                used.push(el);
             }
 
-            // пузыри — всего 5 штук
             for (let i = 0; i < 5; i++) {
                 const bubble = document.createElement('div');
                 bubble.className = 'bubble';
@@ -299,10 +287,8 @@
                 container.appendChild(bubble);
             }
 
-            // очень редкое обновление — раз в 12 секунд
             setInterval(() => {
                 const items = container.querySelectorAll('.float-item');
-                // если элементов стало слишком много — удаляем лишние
                 if (items.length > 22) {
                     for (let i = 0; i < 2 && i < items.length; i++) {
                         if (Math.random() > 0.6) {
@@ -310,7 +296,6 @@
                         }
                     }
                 }
-                // добавляем 1 новый, если нужно
                 if (items.length < 22) {
                     const el = document.createElement('div');
                     el.className = 'float-item';
@@ -329,13 +314,11 @@
                 }
             }, 12000);
 
-            // небольшая оптимизация — убираем лишние перерисовки
             if ('requestAnimationFrame' in window) {
                 let ticking = false;
                 const observer = new ResizeObserver(() => {
                     if (!ticking) {
                         requestAnimationFrame(() => {
-                            // просто сбрасываем флаг, ничего не делаем
                             ticking = false;
                         });
                         ticking = true;
