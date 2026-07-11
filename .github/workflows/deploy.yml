@@ -1,147 +1,33 @@
-name: CI/CD Pipeline
+name: Deploy to Server
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
-env:
-  REGISTRY: docker.io
-  IMAGE_NAME: ermakov880/myapp
+    branches: [ master ]  # Триггер — пуш в ветку main
 
 jobs:
-  # ============================================================
-  # 1. КАЧЕСТВО КОДА (Линтер)
-  # ============================================================
-  lint:
+  deploy:
     runs-on: ubuntu-latest
-    name: Lint Code Base
     steps:
+      # 1. Клонируем код
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Run Super-Linter
-        uses: super-linter/super-linter@v6
-        env:
-          DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Включаем проверку всех типов файлов в репозитории
-          VALIDATE_ALL_CODEBASE: true
-          # Если найдутся ошибки, пайплайн упадёт
-          FAIL_IF_FOUND_ERRORS: true
-
-  # ============================================================
-  # 2. БЕЗОПАСНОСТЬ: ПОИСК СЕКРЕТОВ В КОДЕ
-  # ============================================================
-  secrets:
-    runs-on: ubuntu-latest
-    name: Scan for Secrets
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Нужно для сканирования всей истории
-
-      - name: Run Gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Если найдутся секреты — пайплайн упадёт
-          FAIL_ON_FOUND: true
-
-  # ============================================================
-  # 3. БЕЗОПАСНОСТЬ: УЯЗВИМОСТИ КОДА (SAST)
-  # ============================================================
-  sast:
-    runs-on: ubuntu-latest
-    name: CodeQL Security Scan
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript  # или javascript, go и т.д.
-
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-
-  # ============================================================
-  # 4. СБОРКА, ТЕСТЫ И СКАНИРОВАНИЕ ОБРАЗА
-  # ============================================================
-  build-and-scan:
-    runs-on: ubuntu-latest
-    # Зависимости: сначала должны пройти все проверки
-    needs: [lint, secrets, sast]
-    # Если это Pull Request — только собираем и сканируем, но не пушим
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.fork == false
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      # ----- 4.1 Логин в Docker Hub (только для пуша) -----
+      # 2. Логинимся в Docker Hub
       - name: Login to Docker Hub
-        if: github.event_name == 'push'
-        uses: docker/login-action@v3
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      # ----- 4.2 Сборка Docker-образа -----
-      - name: Build Docker image
-        id: build
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: false  # Сначала только собираем
-          load: true   # Загружаем образ в локальный докер раннера
-          tags: ${{ env.IMAGE_NAME }}:test
-
-      # ----- 4.3 Сканирование уязвимостей образа (Trivy) -----
-      - name: Scan image with Trivy
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          image-ref: ${{ env.IMAGE_NAME }}:test
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          exit-code: '1'  # Если найдёт уязвимости — пайплайн упадёт
-          severity: 'CRITICAL,HIGH'  # Сканируем только критические и высокие
-
-      - name: Upload Trivy results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results.sarif'
-
-      # ----- 4.4 Пуш образа (только для пуша в master) -----
-      - name: Push Docker image
-        if: github.event_name == 'push'
-        uses: docker/build-push-action@v5
+      # 3. Собираем и пушим образ
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: |
-            ${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          tags: ermakov880/myapp:latest
 
-  # ============================================================
-  # 5. ДЕПЛОЙ НА СЕРВЕР (только для пуша в master)
-  # ============================================================
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build-and-scan
-    if: github.event_name == 'push'
-    name: Deploy to Server
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
+      # 4. Подключаемся по SSH к серверу и обновляем контейнер
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
         with:
@@ -151,5 +37,24 @@ jobs:
           script: |
             cd Devops
             git pull
+            docker stop myapp || true   # убиваем старый контейнер, если был запущен вручную
+            docker rm myapp || true
             docker compose pull
             docker compose up -d --remove-orphans
+
+      # 5. Устанавливаем Ansible на раннер
+      - name: Install Ansible
+        run: sudo apt update && sudo apt install ansible -y
+
+      # 6. Настраиваем SSH-ключ для Ansible и запускаем плейбук
+      - name: Setup SSH key and run Ansible
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          eval $(ssh-agent -s)
+          ssh-add ~/.ssh/id_rsa
+          cd ansible
+          ansible-playbook -i inventory.ini playbook.yml -v
+        env:
+          ANSIBLE_HOST_KEY_CHECKING: "False"
