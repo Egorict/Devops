@@ -1,90 +1,83 @@
 ---
-- name: Full setup — Nginx + HTTPS + Docker proxy
-  hosts: webservers
+- name: Configure web server
+  hosts: all
   become: yes
-  vars_files:
-    - vars/main.yml
+  vars:
+    app_dir: /opt/myapp
+    repo_url: https://github.com/yourusername/yourrepo.git
 
   tasks:
     - name: Update apt cache
-      apt:
+      ansible.builtin.apt:
         update_cache: yes
+        cache_valid_time: 3600
 
-    - name: Install Nginx, Certbot and required packages
-      apt:
+    - name: Install required system packages
+      ansible.builtin.apt:
         name:
-          - nginx
-          - certbot
-          - python3-certbot-nginx
-          - curl
+          - docker.io
+          - docker-compose
           - git
+          - nginx
         state: present
 
-    - name: Create web root directory
-      file:
-        path: /var/www/{{ domain_name }}
+    - name: Ensure Docker service is running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create application directory
+      ansible.builtin.file:
+        path: "{{ app_dir }}"
         state: directory
-        owner: www-data
-        group: www-data
-        mode: '0755'
+        owner: root
+        group: root
+        mode: '0755'  # <- исправлено: явно указаны права
 
-    # 4. СТАРТОВЫЙ КОНФИГ (без HTTPS)
-    - name: Copy initial Nginx config (HTTP only)
-      template:
-        src: nginx-http.conf.j2
-        dest: /etc/nginx/sites-available/{{ domain_name }}
-      notify: restart nginx
+    - name: Clone repository
+      ansible.builtin.git:
+        repo: "{{ repo_url }}"
+        dest: "{{ app_dir }}"
+        force: yes
 
-    - name: Enable site
-      file:
-        src: /etc/nginx/sites-available/{{ domain_name }}
-        dest: /etc/nginx/sites-enabled/{{ domain_name }}
+    - name: Copy .env file from template
+      ansible.builtin.template:
+        src: templates/.env.j2
+        dest: "{{ app_dir }}/.env"
+        owner: root
+        group: root
+        mode: '0644'  # <- исправлено: явно указаны права
+
+    - name: Run docker-compose up
+      ansible.builtin.shell:
+        cmd: docker-compose up -d
+        chdir: "{{ app_dir }}"
+
+    - name: Copy nginx config
+      ansible.builtin.template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/sites-available/myapp
+        owner: root
+        group: root
+        mode: '0644'  # <- исправлено
+
+    - name: Enable nginx site
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/myapp
+        dest: /etc/nginx/sites-enabled/myapp
         state: link
-      notify: restart nginx
 
-    - name: Remove default site
-      file:
-        path: /etc/nginx/sites-enabled/default
-        state: absent
-      notify: restart nginx
-
-    # 7. ПОЛУЧЕНИЕ СЕРТИФИКАТА
-    - name: Obtain SSL certificate from Let's Encrypt
-      command: >
-        certbot --nginx
-        --domain {{ domain_name }}
-        --non-interactive
-        --agree-tos
-        --email {{ letsencrypt_email }}
-        --redirect
-      args:
-        creates: /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem
-      notify: reload nginx
-
-    # 8. ФИНАЛЬНЫЙ КОНФИГ (с HTTPS)
-    - name: Copy final Nginx config with HTTPS
-      template:
-        src: nginx-https.conf.j2
-        dest: /etc/nginx/sites-available/{{ domain_name }}
-      notify: reload nginx
-
-    - name: Set up automatic certificate renewal
-      cron:
-        name: "Renew Let's Encrypt certificates"
-        job: "certbot renew --quiet && systemctl reload nginx"
-        minute: "0"
-        hour: "2"
-        day: "*"
-        month: "*"
-        weekday: "0,4"
-
-  handlers:
-    - name: restart nginx
-      service:
-        name: nginx
-        state: restarted
-
-    - name: reload nginx
-      service:
+    - name: Reload nginx
+      ansible.builtin.service:
         name: nginx
         state: reloaded
+
+    - name: Setup cron job for backup
+      ansible.builtin.cron:
+        name: "Daily backup"
+        minute: "0"
+        hour: "2"
+        job: "{{ app_dir }}/backup.sh"
+        user: root
+        state: present
