@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 1.0" 
+  required_version = ">= 1.0"
   required_providers {
     regru = {
       source  = "sport24ru/regru"
