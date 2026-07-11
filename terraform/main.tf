@@ -14,7 +14,7 @@ provider "regru" {
 
 # Создаём A-запись для домена example.com, указывающую на ваш IP
 resource "regru_dns_a_record" "my_site" {
-  zone    = "apollonovaalisaviachislavovna.ru"        # Ваш домен
-  name    = "www"                # Поддомен (будет www.example.com). "@" для основного домена
-  records = ["194.226.163.161"]  # Ваш публичный IP-адрес
+  zone    = "apollonovaalisaviachislavovna.ru" # Ваш домен
+  name    = "www"                              # Поддомен (будет www.example.com). "@" для основного домена
+  records = ["194.226.163.161"]                # Ваш публичный IP-адрес
 }
