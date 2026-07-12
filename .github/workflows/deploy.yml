@@ -23,62 +23,62 @@ jobs:
   # ============================================================
   # 1. КАЧЕСТВО КОДА (Линтер)
   # ============================================================
-  # lint:
-  #   runs-on: ubuntu-latest
-  #   name: Lint Code Base
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint Code Base
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Run Super-Linter
-  #       uses: super-linter/super-linter@v6
-  #       env:
-  #         DEFAULT_BRANCH: master
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         # Включаем проверку всех типов файлов в репозитории
-  #         VALIDATE_ALL_CODEBASE: true
-  #         # Если найдутся ошибки, пайплайн упадёт
-  #         FAIL_IF_FOUND_ERRORS: true
+      - name: Run Super-Linter
+        uses: super-linter/super-linter@v6
+        env:
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Включаем проверку всех типов файлов в репозитории
+          VALIDATE_ALL_CODEBASE: true
+          # Если найдутся ошибки, пайплайн упадёт
+          FAIL_IF_FOUND_ERRORS: true
 
-  # # ============================================================
-  # # 2. БЕЗОПАСНОСТЬ: ПОИСК СЕКРЕТОВ В КОДЕ
-  # # ============================================================
-  # secrets:
-  #   runs-on: ubuntu-latest
-  #   name: Scan for Secrets
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0  # Нужно для сканирования всей истории
+  # ============================================================
+  # 2. БЕЗОПАСНОСТЬ: ПОИСК СЕКРЕТОВ В КОДЕ
+  # ============================================================
+  secrets:
+    runs-on: ubuntu-latest
+    name: Scan for Secrets
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Нужно для сканирования всей истории
 
-  #     - name: Run Gitleaks
-  #       uses: gitleaks/gitleaks-action@v2
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         # Если найдутся секреты — пайплайн упадёт
-  #         FAIL_ON_FOUND: true
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Если найдутся секреты — пайплайн упадёт
+          FAIL_ON_FOUND: true
 
-  # # ============================================================
-  # # 3. БЕЗОПАСНОСТЬ: УЯЗВИМОСТИ КОДА (SAST)
-  # # ============================================================
-  # sast:
-  #   runs-on: ubuntu-latest
-  #   name: CodeQL Security Scan
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
+  # ============================================================
+  # 3. БЕЗОПАСНОСТЬ: УЯЗВИМОСТИ КОДА (SAST)
+  # ============================================================
+  sast:
+    runs-on: ubuntu-latest
+    name: CodeQL Security Scan
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  #     - name: Initialize CodeQL
-  #       uses: github/codeql-action/init@v3
-  #       with:
-  #         languages: javascript  # или javascript, go и т.д.
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript  # или javascript, go и т.д.
 
-  #     - name: Autobuild
-  #       uses: github/codeql-action/autobuild@v3
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
 
-  #     - name: Perform CodeQL Analysis
-  #       uses: github/codeql-action/analyze@v3
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
 
   # ============================================================
   # 4. СБОРКА, ТЕСТЫ И СКАНИРОВАНИЕ ОБРАЗА
