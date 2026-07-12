@@ -19,3 +19,9 @@ resource "regru_dns_a_record" "my_site" {
   name    = "www"                              # Поддомен (будет www.example.com). "@" для основного домена
   records = ["194.226.163.161"]                # Ваш публичный IP-адрес
 }
+
+resource "regru_dns_a_record" "main_domain" {
+  zone    = "apollonovaalisaviachislavovna.ru"
+  name    = "@"          # означает сам домен (без поддомена)
+  records = ["194.226.163.161"]
+}
