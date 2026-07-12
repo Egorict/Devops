@@ -159,16 +159,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd Devops
-            
-            # Настроить Git pull с merge (чтобы избежать ошибки divergent branches)
-            git config pull.rebase false
-            git pull origin master
+            git fetch origin
+            git reset --hard origin/master
             
             if ! command -v ansible-playbook &> /dev/null; then
               sudo apt update && sudo apt install -y ansible
             fi
             
-            # Принудительно удалить все старые контейнеры, чтобы избежать конфликтов имён
             docker rm -f blackbox prometheus grafana node-exporter devops-myapp-1 myapp-myapp-1 2>/dev/null || true
             
             docker compose pull
