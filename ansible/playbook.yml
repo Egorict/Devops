@@ -4,7 +4,7 @@
   connection: local
   become: yes
   vars:
-    domain_name: www.apollonovaalisaviachislavovna.ru
+    domain_name: apollonovaalisaviachislavovna.ru   # <-- без www.
     app_port: 8080
     admin_email: admin@apollonovaalisaviachislavovna.ru
     project_dir: /opt/myapp
