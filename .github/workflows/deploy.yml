@@ -158,21 +158,38 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            # 1. Установить Docker (если его нет)
+            if ! command -v docker &> /dev/null; then
+              curl -fsSL https://get.docker.com -o get-docker.sh
+              sudo sh get-docker.sh
+              sudo usermod -aG docker $USER
+            fi
+
+            # 2. Установить Git (если его нет)
+            if ! command -v git &> /dev/null; then
+              sudo apt update && sudo apt install -y git
+            fi
+
+            # 3. Клонировать репозиторий (если папки нет)
+            if [ ! -d "Devops" ]; then
+              git clone https://github.com/Egorict/Devops.git
+            fi
+
             cd Devops
-            git pull
-            
-            # Установить Ansible, если его нет (делаем в пайплайне, чтобы не зависеть от сервера)
+            git pull origin master
+
+            # 4. Установить Ansible (если его нет)
             if ! command -v ansible-playbook &> /dev/null; then
               sudo apt update && sudo apt install -y ansible
             fi
-            
-            # Остановить и удалить все контейнеры (чтобы избежать конфликтов имён)
+
+            # 5. Остановить и удалить все старые контейнеры (если есть)
             docker stop $(docker ps -aq) 2>/dev/null || true
             docker rm -f $(docker ps -aq) 2>/dev/null || true
-            
-            # Поднять контейнеры
+
+            # 6. Поднять контейнеры
             docker compose pull
             docker compose up -d --remove-orphans --force-recreate
-            
-            # Настроить Nginx и HTTPS через Ansible
+
+            # 7. Настроить Nginx и HTTPS через Ansible
             ansible-playbook ansible/playbook.yml -i localhost, -c local
