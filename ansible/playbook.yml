@@ -1,5 +1,5 @@
 ---
-- name: Configure web server (Nginx, HTTPS, Docker tools)
+- name: Configure full server state (Docker, containers, Nginx, HTTPS)
   hosts: all
   connection: local
   become: yes
@@ -7,14 +7,18 @@
     domain_name: www.apollonovaalisaviachislavovna.ru
     app_port: 8080
     admin_email: admin@apollonovaalisaviachislavovna.ru
+    project_dir: /opt/myapp
 
   tasks:
+    # ============================================================
+    # 1. Базовые пакеты
+    # ============================================================
     - name: Update apt cache
       ansible.builtin.apt:
         update_cache: yes
         cache_valid_time: 3600
 
-    - name: Install required system packages (git, nginx, certbot)
+    - name: Install required system packages
       ansible.builtin.apt:
         name:
           - git
@@ -23,6 +27,9 @@
           - python3-certbot-nginx
         state: present
 
+    # ============================================================
+    # 2. Установка Docker (официальный скрипт)
+    # ============================================================
     - name: Remove existing Docker packages (to avoid conflicts)
       ansible.builtin.apt:
         name:
@@ -55,6 +62,50 @@
         name: docker-compose-plugin
         state: present
 
+    # ============================================================
+    # 3. Клонирование/обновление кода (используем папку из пайплайна)
+    #    Здесь мы копируем код из ~/Devops в /opt/myapp,
+    #    чтобы изолировать проект от домашней папки.
+    # ============================================================
+    - name: Create application directory
+      ansible.builtin.file:
+        path: "{{ project_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Copy project files to /opt/myapp
+      ansible.builtin.shell:
+        cmd: |
+          rm -rf {{ project_dir }}/*
+          cp -r ~/Devops/* {{ project_dir }}/
+      args:
+        creates: "{{ project_dir }}/docker-compose.yml"
+
+    # ============================================================
+    # 4. Управление контейнерами через docker compose
+    # ============================================================
+    - name: Stop and remove old containers (if any)
+      ansible.builtin.shell:
+        cmd: docker compose down --remove-orphans
+        chdir: "{{ project_dir }}"
+      ignore_errors: yes
+
+    - name: Pull latest images
+      ansible.builtin.shell:
+        cmd: docker compose pull
+        chdir: "{{ project_dir }}"
+      ignore_errors: yes
+
+    - name: Start containers
+      ansible.builtin.shell:
+        cmd: docker compose up -d --remove-orphans --force-recreate
+        chdir: "{{ project_dir }}"
+
+    # ============================================================
+    # 5. Настройка Nginx и HTTPS
+    # ============================================================
     - name: Copy nginx config for domain
       ansible.builtin.template:
         src: templates/nginx.conf.j2
