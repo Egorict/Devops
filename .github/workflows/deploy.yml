@@ -159,16 +159,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd Devops
-            git fetch origin
-            git reset --hard origin/master
-            
+            git pull
             if ! command -v ansible-playbook &> /dev/null; then
               sudo apt update && sudo apt install -y ansible
             fi
-            
-            docker rm -f blackbox prometheus grafana node-exporter devops-myapp-1 myapp-myapp-1 2>/dev/null || true
-            
             docker compose pull
-            docker compose up -d --remove-orphans --force-recreate
-            
+            docker compose up -d --remove-orphans
             ansible-playbook ansible/playbook.yml -i localhost, -c local
