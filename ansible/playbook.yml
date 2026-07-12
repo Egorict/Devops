@@ -5,10 +5,10 @@
   become: yes
   vars:
     app_dir: /opt/myapp
-    repo_url: https://github.com/Egorict/Devops.git   # замени на свой
+    repo_url: https://github.com/Egorict/Devops.git
     domain_name: www.apollonovaalisaviachislavovna.ru
     app_port: 8080
-    admin_email: admin@apollonovaalisaviachislavovna.ru   # замени на свой
+    admin_email: admin@apollonovaalisaviachislavovna.ru
 
   tasks:
     - name: Update apt cache
@@ -16,7 +16,7 @@
         update_cache: yes
         cache_valid_time: 3600
 
-    - name: Install required system packages
+    - name: Install required system packages (git, nginx, certbot)
       ansible.builtin.apt:
         name:
           - git
@@ -25,16 +25,37 @@
           - python3-certbot-nginx
         state: present
 
-    - name: Install Docker Compose plugin
+    - name: Remove any existing Docker packages (to avoid conflicts)
       ansible.builtin.apt:
-        name: docker-compose-plugin
-        state: present
+        name:
+          - docker
+          - docker-engine
+          - docker.io
+          - containerd
+          - runc
+        state: absent
+        purge: yes
+      ignore_errors: yes
+
+    - name: Install Docker using official script
+      ansible.builtin.shell:
+        cmd: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sh get-docker.sh
+      args:
+        creates: /usr/bin/docker
+      register: docker_install
 
     - name: Ensure Docker service is running and enabled
       ansible.builtin.service:
         name: docker
         state: started
         enabled: yes
+
+    - name: Install Docker Compose plugin (if not installed)
+      ansible.builtin.apt:
+        name: docker-compose-plugin
+        state: present
 
     - name: Create application directory
       ansible.builtin.file:
@@ -85,7 +106,8 @@
         cmd: certbot --nginx -d {{ domain_name }} -d www.{{ domain_name }} --non-interactive --agree-tos --email {{ admin_email }} --redirect
       args:
         creates: /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem
-      notify: Reload nginx   # <-- исправлено
+      notify: Reload nginx
+
     - name: Setup cron job for backup
       ansible.builtin.cron:
         name: "Daily backup"
