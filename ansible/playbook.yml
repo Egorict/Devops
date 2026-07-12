@@ -4,7 +4,9 @@
   become: yes
   vars:
     app_dir: /opt/myapp
-    repo_url: https://github.com/yourusername/yourrepo.git
+    repo_url: https://github.com/Egorict/Devops.git   # <-- замени на свой
+    domain_name: www.apollonovaalisaviachislavovna.ru
+    app_port: 8080
 
   tasks:
     - name: Update apt cache
@@ -16,9 +18,15 @@
       ansible.builtin.apt:
         name:
           - docker.io
-          - docker-compose
           - git
           - nginx
+          - certbot
+          - python3-certbot-nginx
+        state: present
+
+    - name: Install Docker Compose plugin
+      ansible.builtin.apt:
+        name: docker-compose-plugin
         state: present
 
     - name: Ensure Docker service is running
@@ -33,46 +41,49 @@
         state: directory
         owner: root
         group: root
-        mode: '0755'  # <- исправлено: явно указаны права
+        mode: '0755'
 
     - name: Clone repository
       ansible.builtin.git:
         repo: "{{ repo_url }}"
         dest: "{{ app_dir }}"
-        version: master   
+        version: master
         force: yes
 
-    - name: Copy .env file from template
-      ansible.builtin.template:
-        src: templates/.env.j2
-        dest: "{{ app_dir }}/.env"
-        owner: root
-        group: root
-        mode: '0644'  # <- исправлено: явно указаны права
-
-    - name: Run docker-compose up
+    - name: Run docker compose up
       ansible.builtin.shell:
-        cmd: docker-compose up -d
+        cmd: docker compose up -d
         chdir: "{{ app_dir }}"
 
-    - name: Copy nginx config
+    - name: Copy nginx config for domain
       ansible.builtin.template:
         src: templates/nginx.conf.j2
-        dest: /etc/nginx/sites-available/myapp
+        dest: /etc/nginx/sites-available/{{ domain_name }}
         owner: root
         group: root
-        mode: '0644'  # <- исправлено
+        mode: '0644'
 
     - name: Enable nginx site
       ansible.builtin.file:
-        src: /etc/nginx/sites-available/myapp
-        dest: /etc/nginx/sites-enabled/myapp
+        src: /etc/nginx/sites-available/{{ domain_name }}
+        dest: /etc/nginx/sites-enabled/{{ domain_name }}
         state: link
+
+    - name: Disable default nginx site
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
 
     - name: Reload nginx
       ansible.builtin.service:
         name: nginx
         state: reloaded
+
+    - name: Obtain SSL certificate via Certbot
+      ansible.builtin.shell:
+        cmd: certbot --nginx -d {{ domain_name }} -d www.{{ domain_name }} --non-interactive --agree-tos --email admin@{{ domain_name }} --redirect
+      args:
+        creates: /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem
 
     - name: Setup cron job for backup
       ansible.builtin.cron:
