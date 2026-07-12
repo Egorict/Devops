@@ -1,11 +1,9 @@
 ---
-- name: Configure web server with Docker, Nginx, and HTTPS
+- name: Configure web server (Nginx, HTTPS, Docker tools)
   hosts: all
   connection: local
   become: yes
   vars:
-    app_dir: /opt/myapp
-    repo_url: https://github.com/Egorict/Devops.git
     domain_name: www.apollonovaalisaviachislavovna.ru
     app_port: 8080
     admin_email: admin@apollonovaalisaviachislavovna.ru
@@ -25,7 +23,7 @@
           - python3-certbot-nginx
         state: present
 
-    - name: Remove any existing Docker packages (to avoid conflicts)
+    - name: Remove existing Docker packages (to avoid conflicts)
       ansible.builtin.apt:
         name:
           - docker
@@ -36,6 +34,7 @@
         state: absent
         purge: yes
       failed_when: false
+
     - name: Install Docker using official script
       ansible.builtin.shell:
         cmd: |
@@ -51,30 +50,10 @@
         state: started
         enabled: yes
 
-    - name: Install Docker Compose plugin (if not installed)
+    - name: Install Docker Compose plugin
       ansible.builtin.apt:
         name: docker-compose-plugin
         state: present
-
-    - name: Create application directory
-      ansible.builtin.file:
-        path: "{{ app_dir }}"
-        state: directory
-        owner: root
-        group: root
-        mode: '0755'
-
-    - name: Clone repository
-      ansible.builtin.git:
-        repo: "{{ repo_url }}"
-        dest: "{{ app_dir }}"
-        version: master
-        force: yes
-
-    - name: Run docker compose up
-      ansible.builtin.shell:
-        cmd: docker compose up -d
-        chdir: "{{ app_dir }}"
 
     - name: Copy nginx config for domain
       ansible.builtin.template:
@@ -106,15 +85,6 @@
       args:
         creates: /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem
       notify: Reload nginx
-
-    - name: Setup cron job for backup
-      ansible.builtin.cron:
-        name: "Daily backup"
-        minute: "0"
-        hour: "2"
-        job: "{{ app_dir }}/backup.sh"
-        user: root
-        state: present
 
   handlers:
     - name: Reload nginx

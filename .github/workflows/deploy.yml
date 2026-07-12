@@ -160,9 +160,19 @@ jobs:
           script: |
             cd Devops
             git pull
+            
+            # Установить Ansible, если его нет (делаем в пайплайне, чтобы не зависеть от сервера)
             if ! command -v ansible-playbook &> /dev/null; then
               sudo apt update && sudo apt install -y ansible
             fi
+            
+            # Остановить и удалить все контейнеры (чтобы избежать конфликтов имён)
+            docker stop $(docker ps -aq) 2>/dev/null || true
+            docker rm -f $(docker ps -aq) 2>/dev/null || true
+            
+            # Поднять контейнеры
             docker compose pull
-            docker compose up -d --remove-orphans
-           
+            docker compose up -d --remove-orphans --force-recreate
+            
+            # Настроить Nginx и HTTPS через Ansible
+            ansible-playbook ansible/playbook.yml -i localhost, -c local
