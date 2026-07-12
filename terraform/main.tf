@@ -3,7 +3,7 @@ terraform {
   required_providers {
     regru = {
       source  = "sport24ru/regru"
-      version = "~> 1.0" # Используйте последнюю стабильную версию[citation:1]
+      version = "~> 1.0" # Используйте последнюю стабильную версию
     }
   }
 }
@@ -22,6 +22,6 @@ resource "regru_dns_a_record" "my_site" {
 
 resource "regru_dns_a_record" "main_domain" {
   zone    = "apollonovaalisaviachislavovna.ru"
-  name    = "@"          # означает сам домен (без поддомена)
+  name    = "@" # означает сам домен (без поддомена)
   records = ["194.226.163.161"]
 }
