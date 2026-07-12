@@ -35,8 +35,7 @@
           - runc
         state: absent
         purge: yes
-      ignore_errors: yes
-
+      failed_when: false
     - name: Install Docker using official script
       ansible.builtin.shell:
         cmd: |
