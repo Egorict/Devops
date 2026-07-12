@@ -165,4 +165,4 @@ jobs:
             fi
             docker compose pull
             docker compose up -d --remove-orphans
-            ansible-playbook ansible/playbook.yml -i localhost, -c local
+           
