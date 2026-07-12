@@ -64,8 +64,6 @@
 
     # ============================================================
     # 3. Клонирование/обновление кода (используем папку из пайплайна)
-    #    Здесь мы копируем код из ~/Devops в /opt/myapp,
-    #    чтобы изолировать проект от домашней папки.
     # ============================================================
     - name: Create application directory
       ansible.builtin.file:
@@ -90,13 +88,13 @@
       ansible.builtin.shell:
         cmd: docker compose down --remove-orphans
         chdir: "{{ project_dir }}"
-      ignore_errors: yes
+      failed_when: false
 
     - name: Pull latest images
       ansible.builtin.shell:
         cmd: docker compose pull
         chdir: "{{ project_dir }}"
-      ignore_errors: yes
+      failed_when: false
 
     - name: Start containers
       ansible.builtin.shell:
