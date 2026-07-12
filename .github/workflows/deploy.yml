@@ -160,5 +160,9 @@ jobs:
           script: |
             cd Devops
             git pull
+            if ! command -v ansible-playbook &> /dev/null; then
+              sudo apt update && sudo apt install -y ansible
+            fi
             docker compose pull
             docker compose up -d --remove-orphans
+            ansible-playbook ansible/playbook.yml -i localhost, -c local

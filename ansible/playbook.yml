@@ -1,6 +1,7 @@
 ---
 - name: Configure web server with Docker, Nginx, and HTTPS
   hosts: all
+  connection: local
   become: yes
   vars:
     app_dir: /opt/myapp
@@ -18,7 +19,6 @@
     - name: Install required system packages
       ansible.builtin.apt:
         name:
-          - docker.io
           - git
           - nginx
           - certbot
