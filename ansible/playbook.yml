@@ -63,7 +63,7 @@
         state: present
 
     # ============================================================
-    # 3. Клонирование/обновление кода (используем папку из пайплайна)
+    # 3. Копирование кода
     # ============================================================
     - name: Create application directory
       ansible.builtin.file:
@@ -89,6 +89,12 @@
         cmd: docker compose down --remove-orphans
         chdir: "{{ project_dir }}"
       failed_when: false
+
+    # ---- НОВАЯ ЗАДАЧА: принудительно удаляем конфликтующие контейнеры ----
+    - name: Force remove conflicting containers by name
+      ansible.builtin.shell:
+        cmd: docker rm -f blackbox prometheus grafana node-exporter devops-myapp-1 myapp-myapp-1 2>/dev/null || true
+      changed_when: false
 
     - name: Pull latest images
       ansible.builtin.shell:
