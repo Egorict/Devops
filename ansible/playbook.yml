@@ -1,12 +1,13 @@
 ---
-- name: Configure web server
+- name: Configure web server with Docker, Nginx, and HTTPS
   hosts: all
   become: yes
   vars:
     app_dir: /opt/myapp
-    repo_url: https://github.com/Egorict/Devops.git   # <-- замени на свой
+    repo_url: https://github.com/Egorict/Devops.git   # замени на свой
     domain_name: www.apollonovaalisaviachislavovna.ru
     app_port: 8080
+    admin_email: admin@apollonovaalisaviachislavovna.ru   # замени на свой
 
   tasks:
     - name: Update apt cache
@@ -29,7 +30,7 @@
         name: docker-compose-plugin
         state: present
 
-    - name: Ensure Docker service is running
+    - name: Ensure Docker service is running and enabled
       ansible.builtin.service:
         name: docker
         state: started
@@ -74,16 +75,17 @@
         path: /etc/nginx/sites-enabled/default
         state: absent
 
-    - name: Reload nginx
+    - name: Reload nginx (pre-certbot)
       ansible.builtin.service:
         name: nginx
         state: reloaded
 
     - name: Obtain SSL certificate via Certbot
       ansible.builtin.shell:
-        cmd: certbot --nginx -d {{ domain_name }} -d www.{{ domain_name }} --non-interactive --agree-tos --email admin@{{ domain_name }} --redirect
+        cmd: certbot --nginx -d {{ domain_name }} -d www.{{ domain_name }} --non-interactive --agree-tos --email {{ admin_email }} --redirect
       args:
         creates: /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem
+      notify: reload nginx
 
     - name: Setup cron job for backup
       ansible.builtin.cron:
@@ -93,3 +95,9 @@
         job: "{{ app_dir }}/backup.sh"
         user: root
         state: present
+
+  handlers:
+    - name: reload nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
