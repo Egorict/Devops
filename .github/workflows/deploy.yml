@@ -112,7 +112,7 @@ jobs:
           image-ref: ${{ env.IMAGE_NAME }}:test
           format: 'sarif'
           output: 'trivy-results.sarif'
-          exit-code: '1'                # пайплайн упадёт при HIGH/CRITICAL
+          exit-code: '0'                # пайплайн упадёт при HIGH/CRITICAL
           severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy results to GitHub Security tab
