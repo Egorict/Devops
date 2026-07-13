@@ -9,7 +9,7 @@ on:
 permissions:
   contents: read
   security-events: write
-  actions: read
+  actions: write
   checks: write
   pull-requests: write
   issues: write
@@ -104,6 +104,8 @@ jobs:
           push: false
           load: true
           tags: ${{ env.IMAGE_NAME }}:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       # ----- Сканирование уязвимостей образа (Trivy) -----
       - name: Scan image with Trivy
@@ -170,3 +172,11 @@ jobs:
 
             # 4. Всю остальную магию делает Ansible
             ansible-playbook ansible/playbook.yml -i localhost, -c local
+
+            sleep 6
+            if curl -f -s -o /dev/null "https://www.apollonovaalisaviachislavovna.ru"; then
+              echo "Site is up"
+            else
+              echo "Site is not responding"
+              exit 1
+            fi
