@@ -105,8 +105,21 @@ jobs:
           load: true
           tags: ${{ env.IMAGE_NAME }}:test
 
-      # Trivy отключён (можно включить позже)
-      # - name: Scan image with Trivy ...
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:test
+          format: 'table'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          exit-code: '0'  # Если найдёт уязвимости — пайплайн упадёт
+          severity: 'CRITICAL,HIGH'  # Сканируем только критические и высокие
+
+      - name: Upload Trivy results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: 'trivy-results.sarif'
+
 
       - name: Push Docker image
         if: github.event_name == 'push'
