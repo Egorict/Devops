@@ -9,7 +9,7 @@ on:
 permissions:
   contents: read
   security-events: write
-  actions: write
+  actions: read
   checks: write
   pull-requests: write
   issues: write
@@ -104,8 +104,6 @@ jobs:
           push: false
           load: true
           tags: ${{ env.IMAGE_NAME }}:test
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       # ----- Сканирование уязвимостей образа (Trivy) -----
       - name: Scan image with Trivy
