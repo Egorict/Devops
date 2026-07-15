@@ -1,17 +1,16 @@
 ---
-- name: Configure full server state (Docker, containers, Nginx, HTTPS)
+- name: Configure full server state (Docker, containers, Nginx, HTTP only)
   hosts: all
   connection: local
   become: yes
   vars:
-    domain_name: apollonovaalisaviachislavovna.ru   # <-- без www.
+    # Домен больше не нужен – используем IP
     app_port: 8080
-    admin_email: admin@apollonovaalisaviachislavovna.ru
     project_dir: /opt/myapp
 
   tasks:
     # ============================================================
-    # 1. Базовые пакеты
+    # 1. Базовые пакеты (без Certbot)
     # ============================================================
     - name: Update apt cache
       ansible.builtin.apt:
@@ -23,8 +22,7 @@
         name:
           - git
           - nginx
-          - certbot
-          - python3-certbot-nginx
+          # certbot и python3-certbot-nginx удалены
         state: present
 
     # ============================================================
@@ -90,7 +88,6 @@
         chdir: "{{ project_dir }}"
       failed_when: false
 
-    # ---- НОВАЯ ЗАДАЧА: принудительно удаляем конфликтующие контейнеры ----
     - name: Force remove conflicting containers by name
       ansible.builtin.shell:
         cmd: docker rm -f blackbox prometheus grafana node-exporter devops-myapp-1 myapp-myapp-1 2>/dev/null || true
@@ -108,38 +105,33 @@
         chdir: "{{ project_dir }}"
 
     # ============================================================
-    # 5. Настройка Nginx и HTTPS
+    # 5. Настройка Nginx (прокси на HTTP, без SSL)
     # ============================================================
-    - name: Copy nginx config for domain
+    - name: Copy nginx config for IP (no domain)
       ansible.builtin.template:
         src: templates/nginx.conf.j2
-        dest: /etc/nginx/sites-available/{{ domain_name }}
+        dest: /etc/nginx/sites-available/default   # используем default
         owner: root
         group: root
         mode: '0644'
 
-    - name: Enable nginx site
+    # Включать ничего не надо – по умолчанию default уже включён.
+    # Но если есть другие конфиги, удаляем их.
+    - name: Remove any other enabled sites
+      ansible.builtin.shell:
+        cmd: rm -f /etc/nginx/sites-enabled/*
+      failed_when: false
+
+    - name: Enable our default config
       ansible.builtin.file:
-        src: /etc/nginx/sites-available/{{ domain_name }}
-        dest: /etc/nginx/sites-enabled/{{ domain_name }}
+        src: /etc/nginx/sites-available/default
+        dest: /etc/nginx/sites-enabled/default
         state: link
 
-    - name: Disable default nginx site
-      ansible.builtin.file:
-        path: /etc/nginx/sites-enabled/default
-        state: absent
-
-    - name: Reload nginx (pre-certbot)
+    - name: Reload nginx
       ansible.builtin.service:
         name: nginx
         state: reloaded
-
-    - name: Obtain SSL certificate via Certbot
-      ansible.builtin.shell:
-        cmd: certbot --nginx -d {{ domain_name }} -d www.{{ domain_name }} --non-interactive --agree-tos --email {{ admin_email }} --redirect
-      args:
-        creates: /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem
-      notify: Reload nginx
 
   handlers:
     - name: Reload nginx
