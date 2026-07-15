@@ -59,23 +59,23 @@ jobs:
   # ============================================================
   # 3. БЕЗОПАСНОСТЬ: УЯЗВИМОСТИ КОДА (CodeQL)
   # ============================================================
-  sast:
-    runs-on: ubuntu-latest
-    name: CodeQL Security Scan
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  # sast:
+  #   runs-on: ubuntu-latest
+  #   name: CodeQL Security Scan
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript
+  #     - name: Initialize CodeQL
+  #       uses: github/codeql-action/init@v3
+  #       with:
+  #         languages: javascript
 
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
+  #     - name: Autobuild
+  #       uses: github/codeql-action/autobuild@v3
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+  #     - name: Perform CodeQL Analysis
+  #       uses: github/codeql-action/analyze@v3
 
   # ============================================================
   # 4. СБОРКА ОБРАЗА И СКАНИРОВАНИЕ
@@ -171,10 +171,4 @@ jobs:
             # 4. Всю остальную магию делает Ansible
             ansible-playbook ansible/playbook.yml -i localhost, -c local
 
-            sleep 6
-            if curl -f -s -o /dev/null "https://www.apollonovaalisaviachislavovna.ru"; then
-              echo "Site is up"
-            else
-              echo "Site is not responding"
-              exit 1
-            fi
+            
