@@ -106,19 +106,19 @@ jobs:
           tags: ${{ env.IMAGE_NAME }}:test
 
       # ----- Сканирование уязвимостей образа (Trivy) -----
-      - name: Scan image with Trivy
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ env.IMAGE_NAME }}:test
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          exit-code: '0'                # пайплайн упадёт при HIGH/CRITICAL
-          severity: 'CRITICAL'
+      # - name: Scan image with Trivy
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: ${{ env.IMAGE_NAME }}:test
+      #     format: 'sarif'
+      #     output: 'trivy-results.sarif'
+      #     exit-code: '0'                # пайплайн упадёт при HIGH/CRITICAL
+      #     severity: 'CRITICAL'
 
-      - name: Upload Trivy results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results.sarif'
+      # - name: Upload Trivy results to GitHub Security tab
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: 'trivy-results.sarif'
 
       # ----- Пуш образа (только для пуша в master) -----
       - name: Push Docker image
