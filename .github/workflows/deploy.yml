@@ -151,7 +151,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # 1. Установить Git (если нет) – нужно для клонирования
+            # 1. Установить Git (если нет) – нужно для клонирования 
             if ! command -v git &> /dev/null; then
               sudo apt update && sudo apt install -y git
             fi
